@@ -14,6 +14,7 @@
 #  article_id   :integer
 #
 
+# Model that stores the body and meta-data for an individual news feed entry in the PostgreSQL db
 class FeedEntry < ActiveRecord::Base
   belongs_to :article
 end

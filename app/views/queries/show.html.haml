@@ -1,3 +1,7 @@
+%h4 Query
+= link_to 'Edit', edit_query_path(@query)
+\|
+= link_to 'Back', queries_path
 %p
   %b Query term list:
   = @query.body
@@ -6,6 +10,4 @@
   %b Threshold:
   = @query.threshold
 
-= link_to 'Edit', edit_query_path(@query)
-\|
-= link_to 'Back', queries_path
+

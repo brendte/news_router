@@ -1,3 +1,8 @@
+# code to perform background, recurring CRAWL_INDEX_ROUTE job
+# this is what trigger the fetching, indexing and routing of new documents as they appear in the Feeds
+# this code is run by RufusScheduler every 30 minutes
+# uses rufus_scheduler gem (https://github.com/jmettraux/rufus-scheduler) as an in-process recurring job scheduler/runner;
+# we use this mainly because it is expensive to run cron jobs on Heroku since they run in a separate process (which costs money :)
 unless Rails.env.to_sym == :development
   scheduler = Rufus::Scheduler.start_new
 
