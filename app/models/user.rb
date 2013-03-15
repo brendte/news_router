@@ -17,6 +17,8 @@
 #  updated_at             :datetime
 #
 
+# Model that stores a user account (including password) and links to all of the user's stored queries and routed articles
+# It uses the Devise gem (https://github.com/plataformatec/devise) to provide user account management and user authentication in Rails
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,

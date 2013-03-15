@@ -11,6 +11,7 @@
 #  routed           :boolean
 #
 
+# Model that stores the body and meta-data for a news article on the PostgreSQL db
 class Article < ActiveRecord::Base
   include Indexable
   scope :unrouted, where(routed: false)

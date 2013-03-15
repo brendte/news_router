@@ -9,5 +9,6 @@
 #  updated_at :datetime
 #
 
+# Model that stores the body and meta-data for a news feed in the PostgreSQL db
 class Feed < ActiveRecord::Base
 end
