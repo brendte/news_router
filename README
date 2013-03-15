@@ -20,7 +20,7 @@ NOTE: The code is extensively commented, so this walkthrough provides only a hig
 2.	The core IR functions of the system are contained within the classes in the app/classes directory.
     a. crawler.rb contains the Crawler class, which is responsible for reading and parsing RSS feeds (a list of which can be found in the db/seeds.rb file), and storing the feed entries in the feeds to the db as FeedEntry objects. In addition, it is responsible for calling out to AlchemyAPI with the article URL contained in each FeedEntry in order to retrieve the body text of each article pointed to by a FeedEntry. Each article is then stored as a new Article object in the db.
     b. indexer.rb contains the Indexer class, which is responsible for cleaning, stripping, tokenizing and stemming the Article body text, as well as building internal data structures to hold the words and frequencies before they are stored. It also does the heavy lifting of storing the term and df in the dictionary collection in MongoDB, as well as the document_id and tf for each term in a document in the postings collection of MongoDB.
-    c. scorer.rb contains the Scorer class, which is responsible for calculating the cosine similarity between document vectors. It also contains methods for calculating the if-idf of a term and the euclidean length of documents.
+    c. scorer.rb contains the Scorer class, which is responsible for calculating the cosine similarity between document vectors. It also contains methods for calculating the if-idf of a term and the euclidean length of documents. The cosine similarity algorithm used is based upon the FastCosineScore algorithm on p. 125 of "Introduction to Information Retrieval" by Manning, Raghavan, and Schutze, Cambridge University Press, 2009.
     c. article_router.rb contains the ArticleRouter class, which handles calling into Scorer with documents in order to get their similarity scores, and then determining if a document should be routed to a user based on the score and the user's query threshold for that query. It also handles actually storing a reference to an article in the user's articles collection when there is a match.
 3. The cross-cutting concern of "being an indexable and scorable document" is represented by the Indexable module in concerns/indexable.rb. Any model that includes this module, and contains the proper field as noted in the Indexable comments, can be passed into Indexer and Scorer for indexing and scoring.
 4. The "background" functionality of fetching new articles, indexing them, and then scoring and routing the articles to users is handled by a simple recurring background job scheduled and managed by the rufus_scheduler code in config/scheduler.rb. Every 30 minutes, refus_scheduler triggers this code, which makes the appropriate calls to Crawler, Indexer, and ArticleRouter to perform the actual work.
@@ -28,7 +28,7 @@ NOTE: The code is extensively commented, so this walkthrough provides only a hig
 
 Issues
 
-1. There are no known issues in this version. Doesn't mean there aren't any, it just mean
+1. There are no known issues in this version. Doesn't mean there aren't any, it just means I haven't found them!
 
 Ideas for Enhancement
 
