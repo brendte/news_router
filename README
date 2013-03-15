@@ -1,4 +1,4 @@
-NewClassifier
+News Router
 
 Introduction and Discussion
 
@@ -8,7 +8,7 @@ Installation Instructions:
 
 1.  This is a web application developed in Ruby on Rails and running on the Heroku hosting platform.  No installation is required. All Rails Model data is stored in PostgreSQL. All index-related data (dictionary and postings) are stored in MongoDB.
 2.	Use the app at http://strong-mist-7332.herokuapp.com
-3.	The full code can be accessed on github at https://github.com/brendte/News-Classifier
+3.	The full code can be accessed on the master branch of the github repo at https://github.com/brendte/news_router
 4.	To use, visit http://strong-mist-7332.herokuapp.com and create an account. Once logged in, click My Queries, and create a free text query (the query "pope" with threshold 0.1 will work very well against articles indexed over the last week, for obvious reasons). Return to My Articles, and you may see some results, depending on the query and how long it is taking to run the query agains all known articles. Assuming the query matches some articles, you may have to refresh a couple of times before you start seeing some article on your list. Periodically throughout the days ahead, when you check back in your account, you will see any new articles that have been retrieved that match your query, if there are any.
 5. I have included a couple of screenshots of my "My Articles" and "My Queries" pages. Since beyond this there really is no "running of the application" to screenshot, I'm going to leave it at this and assume that providing this document, the code and the code comments, and the ability to use the app in a live environment will be sufficient to meet this requirement. If you need to see more of what's going on behind the scenes (such as what the data in Postgres or Mongo looks like, please let me know and I can get you access).
 
