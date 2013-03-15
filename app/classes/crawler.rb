@@ -1,16 +1,10 @@
+# This class "crawls" news articles by FeedEntries from know RSS Feeds (see db/seeds for list of currently used RSS feeds),
+# fetching the full article based on the url in the FeedEntry, and creating an Article which contains the article's full body
+# as extracted by the (awesome!) AlchemyAPI (http://www.alchemyapi.com/api/text/proc.html)
 class Crawler
   include Singleton
 
-  #TODO: finish documenting this code
-
-  #class << self
-  #  @instance
-  #end
-  #
-  #def self.instance
-  #  @instance ||= new
-  #end
-
+  # call to update all Feeds with new FeedEntries and create Articles from the FeedEntries, primarily exists for back-ground CRAWL_INDEX_ROUTE job to call
   def crawl
     update_all_feeds
     fetch_and_store_articles
@@ -18,16 +12,22 @@ class Crawler
 
   private
 
+  # use an instance of Rails ActionController::HTML::FullSanitizer to remove all HTML tags from the FeedEntry.summary
   def initialize
     @html_sanitizer = HTML::FullSanitizer.new
   end
 
+  # remove leading and trailing whitespace from a string
+  # s: string
+  # return: string
   def clean_string(s)
     s.lstrip! if s
     s.rstrip! if s
     s
   end
 
+  # for every Feed we monitor, fetch the feed and parse it for FeedEntries, which will be used in fetch_and_store_articles
+  # to fetch and store Articles. this uses the feedzirra (https://github.com/pauldix/feedzirra) gem to fetch and parse the rss feeds
   def update_all_feeds
     Feed.all.each do |feed_entry|
       begin
@@ -52,6 +52,10 @@ class Crawler
     end
   end
 
+  # go out and grab the full body text of the article linked by a FeedEntry.
+  # body text is extracted by the (awesome!) AlchemyAPI (http://www.alchemyapi.com/api/text/proc.html)
+  # calls to Alchemy are performed using the Typhoeus gem (https://github.com/typhoeus/typhoeus) because it's super fast (using curl bindings)
+  # and allows for many concurrent calls
   def fetch_and_store_articles
     hydra = Typhoeus::Hydra.new(max_concurrency: 20)
     FeedEntry.where(fetched: false).each do |feed_entry|
@@ -71,6 +75,11 @@ class Crawler
     end
   end
 
+  # callback for calls made to AlchemyAPI with Typhoeus. when the call returns, this return body is parsed and the article's body
+  # text is stored as a new Article. also note, that we store the article's euclidean length as 0.0 at this point as it will be
+  # calculated during later indexing
+  # feed_entry: FeedEntry
+  # return: Proc
   def store_article(feed_entry)
     Proc.new do |body_response|
       begin
@@ -94,6 +103,9 @@ class Crawler
     end
   end
 
+  # once we've successfully fetched and stored an article, mark it as fetched in the db, so we don't keep trying to fetch it
+  # TODO: future enhancement here would be to take into account updated articles, so that we can refresh the Article body and reindex
+  # feed_entry: FeedEntry
   def mark_as_fetched(feed_entry)
     begin
       feed_entry.fetched = true
