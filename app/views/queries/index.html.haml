@@ -1,5 +1,6 @@
 %h4 My queries
 
+= link_to 'New Query', new_query_path
 %table
   %tr
     %th Query
@@ -17,5 +18,3 @@
       %td= link_to 'Destroy', query, :confirm => 'Are you sure?', :method => :delete
 
 %br
-
-= link_to 'New Query', new_query_path
